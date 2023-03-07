@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Chirps>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Chirp>
  */
 class ChirpsFactory extends Factory
 {

@@ -3,32 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chirp;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ChirpController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
-        //
+        $chirps = Chirp::with('user')->latest()->get();
+        $hello = 'Boo!';
+        return view('chirps.index', [
+            "chirps" => $chirps,
+            "hello" => $hello,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
-        //
+        $validated = $request->validate([
+            'message' => [
+                'required',
+                'string',
+                'max:255',
+                'min:5',
+            ],
+        ]);
+
+        $request->user()->chirps()->create($validated);
+        return redirect(route('chirps.index'));
     }
 
     /**
@@ -42,9 +52,12 @@ class ChirpController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Chirp $chirp)
+    public function edit(Chirp $chirp): View
     {
-        //
+        $this->authorize('update', $chirp);
+        return view('chirps.edit',
+            ['chirp' => $chirp]
+        );
     }
 
     /**
@@ -52,7 +65,17 @@ class ChirpController extends Controller
      */
     public function update(Request $request, Chirp $chirp)
     {
-        //
+        $this->authorize('update', $chirp);
+        $validated = $request->validate([
+            'message' => [
+                'required',
+                'string',
+                'max:255',
+                'min:5',
+            ],
+        ]);
+        $chirp->update($validated);
+        return redirect(route('chirps.index'));
     }
 
     /**
@@ -60,6 +83,8 @@ class ChirpController extends Controller
      */
     public function destroy(Chirp $chirp)
     {
-        //
+        $this->authorize('delete', $chirp);
+        $chirp->delete();
+        return redirect(route('chirps.index'));
     }
 }

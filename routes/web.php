@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ChirpsController;
+use App\Http\Controllers\ChirpController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,8 +28,9 @@ Route::get('/dashboard', function () {
 # POST       /chirps                 store       chirps.store
 # GET        /chirps/{chirp}/edit    edit        chirps.edit
 # PUT/PATCH  /chirps/{chirp}         update      chirps.update
-Route::resource('chirps', ChirpsController::class)
-    ->only(['index', 'store', 'edit', 'update'])
+# DELETE     /chirps/{chirp}         destroy     chirps.destroy
+Route::resource('chirps', ChirpController::class)
+    ->only(['index', 'store', 'edit', 'update', 'destroy'])
     ->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
